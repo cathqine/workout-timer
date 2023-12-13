@@ -17,29 +17,43 @@ function App() {
   const [work, setWork] = useState(40);
   const [rest, setRest] = useState(10);
 
+  const [disabled, setDisabled] = useState(false);
+
   const [buttonText, setButtonText] = useState("Start");
   const [timerStart, setTimerStart] = useState(false);
 
-  const [totalTime, setTotalTime] = useState(40);
+  const [totalTime, setTotalTime] = useState(40); // based on user's choice - settings
   const [minutes, setMinutes] = useState("00"); // default
-  const [seconds, setSeconds] = useState("40"); // default
+  const [seconds, setSeconds] = useState("10"); // default
 
-  const defaultMinutes = "00";
-  const defaultSeconds = "40";
+  const [workingOut, setWorkingOut] = useState(false);
+
+  const defaultWorkoutMinutes = "00"; // change to useState when user goes to settings, etc.
+  const defaultWorkoutSeconds = "40";
+
+  const defaultRestMinutes = "00"; // see previous comment
+  const defaultRestSeconds = "10";
 
   const [open, setOpen] = useState(false);
-  // const [playSound] = useSound(start); // four seconds remaining
   const [playSound, { stop }] = useSound(start);
 
   let timeoutID = 0;
+
+  const padding = (num) => {
+    if (num < 10) {
+      return "0" + num;
+    }
+    return String(num);
+  }
 
   useEffect(() => {
     let interval = 0;
     if (timerStart) {
       interval = window.setInterval(() => {
         let grabSeconds = Number(seconds); // need to make sure padding is done as well
-        setSeconds(grabSeconds - 1);
+        setSeconds(padding(grabSeconds - 1));
       }, 1000);
+      remainingThreeSeconds();
     }
     return () => clearInterval(interval); // i still don't understand this uhhh
   }, [timerStart, seconds]);
@@ -56,12 +70,29 @@ function App() {
 
   const startTimer = () => {
     playSound();
+    setWorkingOut(true);
+    setDisabled(true);
     // disable button
     setButtonText("Stop");
     timeoutID = setTimeout(() => {
       setTimerStart(true);
+      setDisabled(false);
     }, 3500);
     return stopTimer; // this is important?
+  }
+
+  const remainingThreeSeconds = () => {
+    if (Number(seconds) == 3) {
+      playSound();
+    }
+    if (Number(seconds) == 0) { // and minutes is 0 (if minutes is not 0 then make seconds to 59)
+      nextTimer();
+      if (!workingOut) {
+        setWorkingOut(true); // moving on to working out time.
+      } else if (workingOut) {
+        setWorkingOut(false); // moving on to break time.
+      }
+    }
   }
 
   const stopTimer = () => {
@@ -72,11 +103,19 @@ function App() {
     setTimerStart(false);
   }
 
-  const resetTimer = () => {
+  const nextTimer = () => {
+    setTimerStart(false);
+    setMinutes(defaultRestMinutes);
+    setSeconds(defaultRestSeconds);
+    // would expect the timer to still run.
+    setTimerStart(true);
+  }
+
+  const resetTimer = () => { // fully reset timer
     setTimerStart(false);
     setButtonText("Start");
-    setMinutes(defaultMinutes);
-    setSeconds(defaultSeconds);
+    setMinutes(defaultWorkoutMinutes);
+    setSeconds(defaultWorkoutSeconds);
   }
 
   const openModal = () => {
@@ -99,7 +138,7 @@ function App() {
           <b style={{ fontSize: "2.5em" }}>{minutes} : {seconds}</b>
           <div style={{ height: "20%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <Stack direction="row" style={{ margin: "auto" }}>
-              <button style={{ alignSelf: "center", width: "5em" }} onClick={timerStart ? stopTimer : startTimer}>
+              <button disabled={disabled} style={{ alignSelf: "center", width: "5em" }} onClick={timerStart ? stopTimer : startTimer}>
                 {buttonText}
               </button>
               <button style={{ alignSelf: "center", width: "5em" }} onClick={resetTimer}>Reset</button>
