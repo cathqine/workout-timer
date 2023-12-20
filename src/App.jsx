@@ -155,7 +155,7 @@ function App() {
               </img>
               {/* <Settings open={open} onClose={handleClose} func={get_data} /> */}
               <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Settings</DialogTitle>
+                <DialogTitle>Timer Settings</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
                     User customised for number of sets, time set for a workout,
@@ -187,6 +187,8 @@ function App() {
                     defaultValue={10}
                   />
                 </DialogContent>
+                <DialogTitle>Audio Settings</DialogTitle>
+                {/* add audio clips for user to change... */}
                 <DialogActions>
                   <Button onClick={handleClose}>Cancel</Button>
                   <Button onClick={handleClose}>Save</Button>
