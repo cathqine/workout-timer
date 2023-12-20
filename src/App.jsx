@@ -158,8 +158,7 @@ function App() {
                 <DialogTitle>Timer Settings</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    User customised for number of sets, time set for a workout,
-                    time set for rest, and selecting audio sounds.
+                    Customise your number of sets, and time.
                   </DialogContentText>
                   <TextField
                     autoFocus
@@ -187,7 +186,13 @@ function App() {
                     defaultValue={10}
                   />
                 </DialogContent>
+
                 <DialogTitle>Audio Settings</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Select your preferred audio.
+                  </DialogContentText>
+                </DialogContent>
                 {/* add audio clips for user to change... */}
                 <DialogActions>
                   <Button onClick={handleClose}>Cancel</Button>
