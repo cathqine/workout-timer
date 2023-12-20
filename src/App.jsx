@@ -14,6 +14,8 @@ import start from './timer-start.mp3';
 import { useForm } from "react-hook-form";
 
 // import Settings from './components/Settings';
+const onSubmit = data => console.log(data);
+
 
 function App() {
   // user customed
@@ -156,51 +158,54 @@ function App() {
                 onClick={openModal}>
               </img>
               {/* <Settings open={open} onClose={handleClose} func={get_data} /> */}
-              <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Timer Settings</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Customise your number of sets, and time.
-                  </DialogContentText>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="sets"
-                    label="Num of Sets"
-                    type="number"
-                    variant="standard"
-                    defaultValue={3}
-                  />
-                  <TextField
-                    margin="dense"
-                    id="workout"
-                    label="Workout Time"
-                    type="number"
-                    variant="standard"
-                    defaultValue={40}
-                  />
-                  <TextField
-                    margin="dense"
-                    id="rest"
-                    label="Rest Time"
-                    type="number"
-                    variant="standard"
-                    defaultValue={10}
-                  />
-                </DialogContent>
 
-                <DialogTitle>Audio Settings</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Select your preferred audio.
-                  </DialogContentText>
-                </DialogContent>
-                {/* add audio clips for user to change... */}
-                <DialogActions>
-                  <Button onClick={handleClose}>Cancel</Button>
-                  <Button onClick={handleClose}>Save</Button>
-                </DialogActions>
-              </Dialog>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>Timer Settings</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Customise your number of sets, and time.
+                    </DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="sets"
+                      label="Num of Sets"
+                      type="number"
+                      variant="standard"
+                      defaultValue={3}
+                    />
+                    <TextField
+                      margin="dense"
+                      id="workout"
+                      label="Workout Time"
+                      type="number"
+                      variant="standard"
+                      defaultValue={40}
+                    />
+                    <TextField
+                      margin="dense"
+                      id="rest"
+                      label="Rest Time"
+                      type="number"
+                      variant="standard"
+                      defaultValue={10}
+                    />
+                  </DialogContent>
+
+                  <DialogTitle>Audio Settings</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Select your preferred audio.
+                    </DialogContentText>
+                  </DialogContent>
+                  {/* add audio clips for user to change... */}
+                  <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={onSubmit}>Save</Button>
+                  </DialogActions>
+                </Dialog>
+              </form>
             </div>
           </div>
         </div>
