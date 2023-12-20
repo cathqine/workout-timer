@@ -158,7 +158,6 @@ function App() {
                 onClick={openModal}>
               </img>
               {/* <Settings open={open} onClose={handleClose} func={get_data} /> */}
-
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Dialog open={open} onClose={handleClose}>
                   <DialogTitle>Timer Settings</DialogTitle>
