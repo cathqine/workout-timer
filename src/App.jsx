@@ -7,72 +7,86 @@ import {
   DialogContentText,
   TextField,
   DialogActions,
-  Button
+  Button,
 } from '@mui/material';
 import useSound from 'use-sound';
 import start from './timer-start.mp3';
 import { useForm } from "react-hook-form";
 
-// import Settings from './components/Settings';
-const onSubmit = data => console.log(data);
+/**
+ * Time Helper Functions
+ */
+const secondsToMinutes = (sec) => {
+  const mins = Math.floor(sec / 60);
+  const secs = Math.ceil(sec % 60);
 
+  return {
+    "mins": Number(mins),
+    "secs": Number(secs)
+  }
+}
 
+const padding = (num) => {
+  if (num === 0) {
+    return String("00");
+  }
+  if (num < 10) {
+    return "0" + num;
+  }
+  return String(num);
+}
+
+/**
+ * Workout Timer
+ */
 function App() {
-  // user customed
+  // user customed - nums in terms of total num / total seconds
   const [numSets, setNumSets] = useState(3);
-  const [work, setWork] = useState(40);
+  const [work, setWork] = useState(20);
   const [rest, setRest] = useState(10);
 
-  const defaultWorkoutMinutes = "00"; // change to useState when user goes to settings, etc.
-  const defaultWorkoutSeconds = "40";
+  const workObj = secondsToMinutes(work); // useEffect
+  const restObj = secondsToMinutes(rest); // useEffect
 
-  const defaultRestMinutes = "00"; // see previous comment
-  const defaultRestSeconds = "10";
-
+  // Start/Stop Timer Button
   const [disabled, setDisabled] = useState(false);
-
   const [buttonText, setButtonText] = useState("Start");
   const [timerStart, setTimerStart] = useState(false);
 
-  const [totalTime, setTotalTime] = useState(40); // based on user's choice - settings
-  const [minutes, setMinutes] = useState("00"); // default
-  const [seconds, setSeconds] = useState("10"); // default
+  // based on user's choice - settings
+  const [totalTime, setTotalTime] = useState(work); // num in terms of total seconds
+  const [minutes, setMinutes] = useState(workObj.mins); // default
+  const [seconds, setSeconds] = useState(workObj.secs); // default
 
+  // working out timer start (true = working; false = resting/paused)
   const [workingOut, setWorkingOut] = useState(false);
 
+  // settings & audio
   const [open, setOpen] = useState(false);
   const [playSound, { stop }] = useSound(start);
 
   let timeoutID = 0;
 
-  const padding = (num) => {
-    if (num < 10) {
-      return "0" + num;
-    }
-    return String(num);
-  }
-
+  // Timer
   useEffect(() => {
     let interval = 0;
     if (timerStart) {
       interval = window.setInterval(() => {
+        let grabMinutes = Number(minutes);
+        setMinutes(padding(grabMinutes));
         let grabSeconds = Number(seconds); // need to make sure padding is done as well
+        if (grabSeconds === 0 && grabMinutes > 0) {
+          grabMinutes -= 1;
+          setMinutes(padding(grabMinutes));
+          grabSeconds = 60;
+          setSeconds(padding(grabSeconds));
+        }
         setSeconds(padding(grabSeconds - 1));
       }, 1000);
       remainingThreeSeconds();
     }
     return () => clearInterval(interval); // i still don't understand this uhhh
   }, [timerStart, seconds]);
-
-  const secondsToMinutes = (sec) => {
-    const mins = Math.floor(sec / 60);
-    const secs = Math.ceil(sec % 60);
-
-    return {
-      "mins": mins,
-      "secs": secs
-    }
-  }
 
   const startTimer = () => {
     playSound();
@@ -87,16 +101,21 @@ function App() {
     return stopTimer; // this is important?
   }
 
+  // very important function for timer to move on to the next; also needs sets counter to be incorporated here
   const remainingThreeSeconds = () => {
-    if (Number(seconds) == 3) {
-      playSound();
-    }
-    if (Number(seconds) == 0) { // and minutes is 0 (if minutes is not 0 then make seconds to 59)
-      nextTimer();
-      if (!workingOut) {
-        setWorkingOut(true); // moving on to working out time.
-      } else if (workingOut) {
-        setWorkingOut(false); // moving on to break time.
+    if (Number(minutes) === 0) { // therefore last couple of seconds
+      if (Number(seconds) === 3) {
+        playSound();
+      }
+      if (Number(seconds) === 0) { // and minutes is 0 (if minutes is not 0 then make seconds to 59)
+        setTimeout(() => { // want to display the 0th second before proceeding
+          nextTimer();
+        }, 500);
+        if (!workingOut) {
+          setWorkingOut(true); // moving on to working out time.
+        } else if (workingOut) {
+          setWorkingOut(false); // moving on to break time.
+        }
       }
     }
   }
@@ -111,8 +130,8 @@ function App() {
 
   const nextTimer = () => {
     setTimerStart(false);
-    setMinutes(defaultRestMinutes);
-    setSeconds(defaultRestSeconds);
+    setMinutes(restObj.mins);
+    setSeconds(restObj.secs);
     // would expect the timer to still run.
     setTimerStart(true);
   }
@@ -120,8 +139,8 @@ function App() {
   const resetTimer = () => { // fully reset timer
     setTimerStart(false);
     setButtonText("Start");
-    setMinutes(defaultWorkoutMinutes);
-    setSeconds(defaultWorkoutSeconds);
+    setMinutes(workObj.mins);
+    setSeconds(workObj.secs);
   }
 
   const openModal = () => {
@@ -130,6 +149,23 @@ function App() {
 
   const handleClose = () => {
     setOpen(false);
+  }
+
+  const { register, handleSubmit, getValues } = useForm({
+    defaultValues: {
+      sets: '',
+      workout: '',
+      rest: '',
+    }
+  });
+
+  // settings form on submit, changes the values based on whatever (these are the starting numbers).
+  const onSubmit = () => {
+    const data = getValues();
+    console.log(data);
+    setNumSets(data.sets);
+    setWork(data.workout);
+    setRest(data.rest);
   }
 
   return (
@@ -158,8 +194,8 @@ function App() {
                 onClick={openModal}>
               </img>
               {/* <Settings open={open} onClose={handleClose} func={get_data} /> */}
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <Dialog open={open} onClose={handleClose}>
+              <Dialog open={open} onClose={handleClose}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <DialogTitle>Timer Settings</DialogTitle>
                   <DialogContent>
                     <DialogContentText>
@@ -173,6 +209,7 @@ function App() {
                       type="number"
                       variant="standard"
                       defaultValue={3}
+                      {...register("sets")}
                     />
                     <TextField
                       margin="dense"
@@ -181,6 +218,7 @@ function App() {
                       type="number"
                       variant="standard"
                       defaultValue={40}
+                      {...register("workout")}
                     />
                     <TextField
                       margin="dense"
@@ -189,9 +227,9 @@ function App() {
                       type="number"
                       variant="standard"
                       defaultValue={10}
+                      {...register("rest")}
                     />
                   </DialogContent>
-
                   <DialogTitle>Audio Settings</DialogTitle>
                   <DialogContent>
                     <DialogContentText>
@@ -201,14 +239,14 @@ function App() {
                   {/* add audio clips for user to change... */}
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={onSubmit}>Save</Button>
+                    <Button type="submit" onClick={() => { onSubmit(); handleClose(); }}>Save</Button>
                   </DialogActions>
-                </Dialog>
-              </form>
+                </form>
+              </Dialog>
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 }
