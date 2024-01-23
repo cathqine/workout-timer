@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import useSound from 'use-sound';
 import start from './timer-start.mp3';
+import bleep from './bleeps.wav';
 import { useForm } from "react-hook-form";
 
 /**
@@ -42,7 +43,7 @@ const padding = (num) => {
 function App() {
   // user customed - nums in terms of total num / total seconds
   const [numSets, setNumSets] = useState(3);
-  const [work, setWork] = useState(20);
+  const [work, setWork] = useState(61);
   const [rest, setRest] = useState(10);
 
   const workObj = secondsToMinutes(work); // useEffect
@@ -52,6 +53,7 @@ function App() {
   const [disabled, setDisabled] = useState(false);
   const [buttonText, setButtonText] = useState("Start");
   const [timerStart, setTimerStart] = useState(false);
+  const [timerReset, setTimerReset] = useState(false);
 
   // based on user's choice - settings
   const [totalTime, setTotalTime] = useState(work); // num in terms of total seconds
@@ -63,30 +65,47 @@ function App() {
 
   // settings & audio
   const [open, setOpen] = useState(false);
-  const [playSound, { stop }] = useSound(start);
+  const [playSound, { stop }] = useSound(bleep);
 
   let timeoutID = 0;
 
-  // Timer
+  /*
+   * Timer Countdowns
+   */
   useEffect(() => {
     let interval = 0;
     if (timerStart) {
       interval = window.setInterval(() => {
+        /**
+         * Setting Minutes on the Timer
+         */
         let grabMinutes = Number(minutes);
-        setMinutes(padding(grabMinutes));
-        let grabSeconds = Number(seconds); // need to make sure padding is done as well
+        /**
+         * Setting Seconds on the Timer
+         */
+        let grabSeconds = Number(seconds);
         if (grabSeconds === 0 && grabMinutes > 0) {
           grabMinutes -= 1;
-          setMinutes(padding(grabMinutes));
+          setMinutes(grabMinutes);
           grabSeconds = 60;
-          setSeconds(padding(grabSeconds));
+          setSeconds(grabSeconds);
         }
-        setSeconds(padding(grabSeconds - 1));
+        setSeconds(grabSeconds - 1);
       }, 1000);
       remainingThreeSeconds();
     }
     return () => clearInterval(interval); // i still don't understand this uhhh
   }, [timerStart, seconds]);
+
+  /*
+   * Resetting Countdown of Timer
+   */
+  useEffect(() => {
+    if (timerReset) {
+      setTimerStart(false);
+      setTimerReset(false);
+    }
+  }, [timerReset]);
 
   const startTimer = () => {
     playSound();
@@ -104,7 +123,7 @@ function App() {
   // very important function for timer to move on to the next; also needs sets counter to be incorporated here
   const remainingThreeSeconds = () => {
     if (Number(minutes) === 0) { // therefore last couple of seconds
-      if (Number(seconds) === 3) {
+      if (Number(seconds) === 4) {
         playSound();
       }
       if (Number(seconds) === 0) { // and minutes is 0 (if minutes is not 0 then make seconds to 59)
@@ -130,6 +149,7 @@ function App() {
 
   const nextTimer = () => {
     setTimerStart(false);
+    setTimerReset(true); // resets to latest workout/rest time.
     setMinutes(restObj.mins);
     setSeconds(restObj.secs);
     // would expect the timer to still run.
@@ -137,10 +157,16 @@ function App() {
   }
 
   const resetTimer = () => { // fully reset timer
-    setTimerStart(false);
-    setButtonText("Start");
+    stop();
+    setDisabled(false);
+
+    // TODO: stop timer.
+    stopTimer();
+
     setMinutes(workObj.mins);
     setSeconds(workObj.secs);
+    setTimerStart(false);
+    setTimerReset(true);
   }
 
   const openModal = () => {
@@ -176,7 +202,7 @@ function App() {
           <div>
             <i>{numSets} sets of {work}s workout with {rest}s rest in between</i>
           </div>
-          <b style={{ fontSize: "2.5em" }}>{minutes} : {seconds}</b>
+          <b style={{ fontSize: "2.5em" }}>{padding(minutes)} : {padding(seconds)}</b>
           <div style={{ height: "20%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <Stack direction="row" style={{ margin: "auto" }}>
               <button disabled={disabled} style={{ alignSelf: "center", width: "5em" }} onClick={timerStart ? stopTimer : startTimer}>
