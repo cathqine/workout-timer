@@ -15,7 +15,7 @@ import bleep from './bleeps.wav';
 import { useForm } from "react-hook-form";
 
 /**
- * Time Helper Functions
+ * Time Helper Functions --- move to another file !!!!!!!!
  */
 const secondsToMinutes = (sec) => {
   const mins = Math.floor(sec / 60);
@@ -38,16 +38,16 @@ const padding = (num) => {
 }
 
 /**
- * Workout Timer
+ * Workout Timer !
  */
 function App() {
   // user customed - nums in terms of total num / total seconds
   const [numSets, setNumSets] = useState(3);
-  const [work, setWork] = useState(61);
+  const [work, setWork] = useState(40);
   const [rest, setRest] = useState(10);
 
-  const workObj = secondsToMinutes(work); // useEffect
-  const restObj = secondsToMinutes(rest); // useEffect
+  const [workObj, setWorkObj] = useState(secondsToMinutes(work)); // useEffect
+  const [restObj, setRestObj] = useState(secondsToMinutes(rest)); // useEffect
 
   // Start/Stop Timer Button
   const [disabled, setDisabled] = useState(false);
@@ -56,7 +56,6 @@ function App() {
   const [timerReset, setTimerReset] = useState(false);
 
   // based on user's choice - settings
-  const [totalTime, setTotalTime] = useState(work); // num in terms of total seconds
   const [minutes, setMinutes] = useState(workObj.mins); // default
   const [seconds, setSeconds] = useState(workObj.secs); // default
 
@@ -67,7 +66,7 @@ function App() {
   const [open, setOpen] = useState(false);
   const [playSound, { stop }] = useSound(bleep);
 
-  let timeoutID = 0;
+  let [timeoutID, setTimeoutID] = useState(0);
 
   /*
    * Timer Countdowns
@@ -101,11 +100,10 @@ function App() {
    * Resetting Countdown of Timer
    */
   useEffect(() => {
-    if (timerReset) {
-      setTimerStart(false);
-      setTimerReset(false);
-    }
-  }, [timerReset]);
+    setTimerStart(false);
+    stopTimer(); // see if works
+    setTimerReset(false);
+  }, [timerReset, open]);
 
   const startTimer = () => {
     playSound();
@@ -117,6 +115,7 @@ function App() {
       setTimerStart(true);
       setDisabled(false);
     }, 3500);
+    setTimeoutID(timeoutID);
     return stopTimer; // this is important?
   }
 
@@ -132,7 +131,7 @@ function App() {
         }, 500);
         if (!workingOut) {
           setWorkingOut(true); // moving on to working out time.
-        } else if (workingOut) {
+        } else {
           setWorkingOut(false); // moving on to break time.
         }
       }
@@ -147,11 +146,22 @@ function App() {
     setTimerStart(false);
   }
 
+  // goes to next workout/rest timer.
   const nextTimer = () => {
-    setTimerStart(false);
-    setTimerReset(true); // resets to latest workout/rest time.
-    setMinutes(restObj.mins);
-    setSeconds(restObj.secs);
+    setTimerStart(false); // why?? ... oh setting a new timer i suppose?
+
+    if (workingOut) {
+      setWorkingOut(false);
+      // setting display
+      setMinutes(restObj.mins);
+      setSeconds(restObj.secs);
+    } else {
+      setWorkingOut(true);
+      // setting display
+      setMinutes(workObj.mins);
+      setSeconds(workObj.secs);
+    }
+
     // would expect the timer to still run.
     setTimerStart(true);
   }
@@ -159,15 +169,16 @@ function App() {
   const resetTimer = () => { // fully reset timer
     stop();
     setDisabled(false);
-
-    // TODO: stop timer.
     stopTimer();
-
     setMinutes(workObj.mins);
     setSeconds(workObj.secs);
     setTimerStart(false);
     setTimerReset(true);
   }
+
+  /**
+   * Settings - Modal
+   */
 
   const openModal = () => {
     setOpen(true);
@@ -188,10 +199,23 @@ function App() {
   // settings form on submit, changes the values based on whatever (these are the starting numbers).
   const onSubmit = () => {
     const data = getValues();
-    console.log(data);
-    setNumSets(data.sets);
-    setWork(data.workout);
-    setRest(data.rest);
+
+    console.log(data); // good.
+
+    setNumSets(Number(data.sets));
+
+    setWork(Number(data.workout));
+    setRest(Number(data.rest));
+
+    setWorkObj(secondsToMinutes(data.workout));
+    setRestObj(secondsToMinutes(data.rest));
+
+    if (Number(data.sets) === numSets && Number(data.workout) === work && Number(data.rest) === rest) { // how to make it so that not need double click for it to work..
+      if (Number(data.sets) > 0 && Number(data.workout) >= 0 && Number(data.rest) >= 0) {
+        handleClose();
+        resetTimer();
+      }
+    }
   }
 
   return (
@@ -202,8 +226,10 @@ function App() {
           <div>
             <i>{numSets} sets of {work}s workout with {rest}s rest in between</i>
           </div>
-          <b style={{ fontSize: "2.5em" }}>{padding(minutes)} : {padding(seconds)}</b>
+          <b style={{ fontSize: "2.5em" }}>{padding(minutes)} : {padding(seconds)}</b> {/* how to make minutes update after settings modal? */}
           <div style={{ height: "20%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+
+            {/* button text - start/stop */}
             <Stack direction="row" style={{ margin: "auto" }}>
               <button disabled={disabled} style={{ alignSelf: "center", width: "5em" }} onClick={timerStart ? stopTimer : startTimer}>
                 {buttonText}
@@ -229,18 +255,29 @@ function App() {
                     </DialogContentText>
                     <TextField
                       autoFocus
+                      required
                       margin="dense"
                       id="sets"
                       label="Num of Sets"
                       type="number"
                       variant="standard"
                       defaultValue={3}
-                      {...register("sets")}
+                      {...register("sets", {
+                        validate: {
+                          positive: v => parseInt(v) > 0,
+                          lessThanTen: v => parseInt(v) < 10,
+                          validateNumber: (_, values) =>
+                            !!(values.number1 + values.number2),
+                          checkUrl: async () => await fetch(),
+                        },
+                        required: true
+                      })}
                     />
                     <TextField
                       margin="dense"
+                      required
                       id="workout"
-                      label="Workout Time"
+                      label="Workout Time/Set (s)"
                       type="number"
                       variant="standard"
                       defaultValue={40}
@@ -248,8 +285,9 @@ function App() {
                     />
                     <TextField
                       margin="dense"
+                      required
                       id="rest"
-                      label="Rest Time"
+                      label="Rest Time/Set (s)"
                       type="number"
                       variant="standard"
                       defaultValue={10}
@@ -265,7 +303,7 @@ function App() {
                   {/* add audio clips for user to change... */}
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button type="submit" onClick={() => { onSubmit(); handleClose(); }}>Save</Button>
+                    <Button type="submit" onClick={() => { onSubmit(); }}>Save</Button>
                   </DialogActions>
                 </form>
               </Dialog>
