@@ -38,11 +38,12 @@ const padding = (num) => {
 }
 
 /**
- * Workout Timer !
+ * Workout Timer !!
  */
 function App() {
   // user customed - nums in terms of total num / total seconds
   const [numSets, setNumSets] = useState(3);
+  const [totalSets, setTotalSets] = useState(numSets);
   const [work, setWork] = useState(40);
   const [rest, setRest] = useState(10);
 
@@ -155,6 +156,7 @@ function App() {
       // setting display
       setMinutes(restObj.mins);
       setSeconds(restObj.secs);
+      setNumSets(numSets - 1);
     } else {
       setWorkingOut(true);
       // setting display
@@ -164,6 +166,13 @@ function App() {
 
     // would expect the timer to still run.
     setTimerStart(true);
+
+    // Finished Workout condition:
+    if (numSets === 0) {
+      alert("YOU COMPLETED YOUR WORKOUT, CONGRATS!");
+      resetTimer();
+      setNumSets(totalSets);
+    }
   }
 
   const resetTimer = () => { // fully reset timer
@@ -203,6 +212,7 @@ function App() {
     console.log(data); // good.
 
     setNumSets(Number(data.sets));
+    setTotalSets(Number(data.sets));
 
     setWork(Number(data.workout));
     setRest(Number(data.rest));
