@@ -137,16 +137,21 @@ function App() {
   }, [timerReset, open]);
 
   const startTimer = () => {
-    playSound();
-    setWorkingOut(true);
-    setDisabled(true);
-    // disable button
-    setButtonText("Stop");
-    timeoutID = setTimeout(() => {
+    if (numSets == totalSets) {
+      playSound();
+      setWorkingOut(true);
+      setDisabled(true);
+      // disable button
+      setButtonText("Stop");
+      timeoutID = setTimeout(() => {
+        setTimerStart(true);
+        setDisabled(false);
+      }, 3500);
+      setTimeoutID(timeoutID);
+    } else {
+      setButtonText("Stop");
       setTimerStart(true);
-      setDisabled(false);
-    }, 3500);
-    setTimeoutID(timeoutID);
+    }
     return stopTimer; // this is important?
   }
 
