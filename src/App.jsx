@@ -159,7 +159,7 @@ function App() {
       if (Number(seconds) === 0) { // and minutes is 0 (if minutes is not 0 then make seconds to 59)
         setTimeout(() => { // want to display the 0th second before proceeding
           nextTimer();
-        }, 500);
+        }, 300);
         if (!workingOut) {
           setWorkingOut(true); // moving on to working out time.
         } else {
