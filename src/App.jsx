@@ -16,6 +16,7 @@ import useSound from 'use-sound';
 // import start from './timer-start.mp3';
 import bleep from './bleeps.wav';
 import { useForm } from "react-hook-form";
+import './App.css';
 
 /**
  * Time Helper Functions --- move to another file !!!!!!!!
@@ -265,7 +266,9 @@ function App() {
 
   return (
     <>
-      <h1> Workout Timer</h1>
+      <div className='center-align'>
+        <h1> Workout Timer</h1>
+      </div>
       {/* display: 'infline-flex' */}
       <Box sx={{ position: 'relative', display: 'none' }}>
         <CircularProgress size="30em" variant="determinate" value={progress} />
@@ -286,7 +289,7 @@ function App() {
           </Typography>
         </Box>
       </Box>
-      <div className='center-align' style={{ margin: "0em 33.3em" }}>
+      <div className='center-align'>
         <div style={{ height: "15em", width: "25em", backgroundColor: "salmon", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "space-evenly" }}>
           <div>
             <i>{numSets} sets of {work}s workout with {rest}s rest in between</i>
