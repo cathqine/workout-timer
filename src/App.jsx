@@ -8,9 +8,12 @@ import {
   TextField,
   DialogActions,
   Button,
+  CircularProgress,
+  Typography,
+  Box,
 } from '@mui/material';
 import useSound from 'use-sound';
-import start from './timer-start.mp3';
+// import start from './timer-start.mp3';
 import bleep from './bleeps.wav';
 import { useForm } from "react-hook-form";
 
@@ -47,8 +50,8 @@ function App() {
   const [work, setWork] = useState(40);
   const [rest, setRest] = useState(10);
 
-  const [workObj, setWorkObj] = useState(secondsToMinutes(work)); // useEffect
-  const [restObj, setRestObj] = useState(secondsToMinutes(rest)); // useEffect
+  const [workObj, setWorkObj] = useState(secondsToMinutes(work));
+  const [restObj, setRestObj] = useState(secondsToMinutes(rest));
 
   // Start/Stop Timer Button
   const [disabled, setDisabled] = useState(false);
@@ -68,6 +71,33 @@ function App() {
   const [playSound, { stop }] = useSound(bleep);
 
   let [timeoutID, setTimeoutID] = useState(0);
+
+  /**
+   * Circular Dialog... WIP
+   */
+  const [progress, setProgress] = useState(0);
+  const [secondsRemaining, setSecondsRemaining] = useState(seconds);
+  // CircleDialog.
+  useEffect(() => {
+    if (timerStart) {
+      let timer = setInterval(() => {
+        setProgress((prevProgress) => {
+          if (prevProgress >= 100) {
+            setProgress(seconds);
+            setSecondsRemaining(0);
+          } else {
+            setProgress(prevProgress + 100 / work);
+            setSecondsRemaining(seconds);
+          }
+          // (prevProgress >= 100 ? 0 : prevProgress + 100 / 5)
+        }
+        );
+      }, 800);
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, []);
 
   /*
    * Timer Countdowns
@@ -231,6 +261,26 @@ function App() {
   return (
     <>
       <h1> Workout Timer</h1>
+      {/* display: 'infline-flex' */}
+      <Box sx={{ position: 'relative', display: 'none' }}>
+        <CircularProgress size="30em" variant="determinate" value={progress} />
+        <Box
+          sx={{
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography fontSize="2em" variant="caption" component="div" color="black">
+            {`${Math.round(secondsRemaining)}`}
+          </Typography>
+        </Box>
+      </Box>
       <div className='center-align' style={{ margin: "0em 33.3em" }}>
         <div style={{ height: "15em", width: "25em", backgroundColor: "red", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "space-evenly" }}>
           <div>
