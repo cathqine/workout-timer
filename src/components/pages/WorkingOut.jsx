@@ -30,7 +30,8 @@ const WorkingOut = () => {
 
       <div style={{ justifyContent: "space-between" }} className="flex-row default-div">
         <div style={{ margin: "1em" }} className="default-div end-contents">
-          <Button location="/" text="End" margin="0em auto 0em auto" type="border-rect-button"></Button> {/* would require specific button effects */}
+          {/* this button below specifically needs a counting record of how many sets done & how much time has gone by */}
+          <Button location="/results" text="End" margin="0em auto 0em auto" type="border-rect-button"></Button> {/* would require specific button effects */}
         </div>
         <div className="default-div end-contents caption" style={{ margin: "1em", marginLeft: "0em", marginTop: "4.5em" }}>Sets left: {numSets}</div>
       </div>
