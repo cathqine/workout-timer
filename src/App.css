@@ -161,6 +161,7 @@ input:focus {
 
 .button-grow {
   transition: all 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .button-grow:hover {

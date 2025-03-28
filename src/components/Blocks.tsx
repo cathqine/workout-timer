@@ -6,6 +6,7 @@ interface BlocksType {
   value: string;
   description: string;
   margin: string;
+  color: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
   setShortDesc: React.Dispatch<React.SetStateAction<string>>;
   setMedDesc: React.Dispatch<React.SetStateAction<string>>;
@@ -63,12 +64,12 @@ const Blocks = (props: BlocksType): ReactElement => {
 
   return (
     <>
-      <button style={{ textDecoration: 'none', margin: `${props.margin}` }} onClick={() => redirectWithContents()}>
-        <div className="center-contents" style={{ margin: `${props.margin}`, height: "10em", width: "14em", backgroundColor: "#BAD5DD", display: "flex", flexDirection: "column" }}>
+      <div style={{ margin: `${props.margin}` }} onClick={() => redirectWithContents()}>
+        <div className="center-contents button-grow" style={{ border: "0.2rem double rgb(30, 62, 81)", margin: `${props.margin}`, height: "10em", width: "14em", backgroundColor: `${props.color}`, display: "flex", flexDirection: "column" }}>
           <div className="default-div" style={{ color: "white", backgroundColor: "transparent", marginBottom: "0.7em", fontSize: "2em" }}>{props.text}</div>
           <div className="default-div" style={{ color: "white", backgroundColor: "transparent" }}>{props.description}</div>
         </div>
-      </button>
+      </div>
     </>
   );
 }
