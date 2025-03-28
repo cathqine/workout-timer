@@ -43,7 +43,7 @@ let NewWorkout = (): ReactElement => {
     <>
       <div className="caption">Workout Details</div>
 
-      <div className="default-div" style={{ fontSize: "2.5em", textAlign: "start", margin: "0em 0em 1em 1em" }}>
+      <div className="default-div center-contents flex-col" style={{ fontSize: "2.5em", textAlign: "start", margin: "0.5em 0em 1em 0em" }}>
         <div className="default-div">{num} sets</div>
         <div className="default-div">{speed} seconds/set</div>
       </div>
@@ -55,7 +55,7 @@ let NewWorkout = (): ReactElement => {
         </button>
       </div>
 
-      <Button margin="6em auto 0em auto" location={location} text="Start" type="thin-rect-button"></Button>
+      <Button margin="5em auto 0em auto" location={location} text="Start" type="thinner-rect-button"></Button>
     </>
   );
 }

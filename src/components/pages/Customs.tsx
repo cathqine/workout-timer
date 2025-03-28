@@ -33,14 +33,15 @@ const Customs = (): ReactElement => {
     <>
       <div className="caption">{text}</div>
       <div className="flex-row center-contents default-div" style={{ marginBottom: "2em" }}>
-        <Blocks color="#B9D2E7" margin="0em auto 0em auto" value={shortDesc.split(" ")[0]} text="Short" description={shortDesc} setText={setText} setShortDesc={setShortDesc} setMedDesc={setMedDesc} setLongDesc={setLongDesc} setCustomDesc={setCustomDesc} />
+        <Blocks color="#B9D2E7" margin="0em 0em 0em auto" value={shortDesc.split(" ")[0]} text="Short" description={shortDesc} setText={setText} setShortDesc={setShortDesc} setMedDesc={setMedDesc} setLongDesc={setLongDesc} setCustomDesc={setCustomDesc} />
         <Blocks color="#85AFD1" margin="0em auto 0em auto" value={medDesc.split(" ")[0]} text="Medium" description={medDesc} setText={setText} setShortDesc={setShortDesc} setMedDesc={setMedDesc} setLongDesc={setLongDesc} setCustomDesc={setCustomDesc} />
       </div>
       <div className="flex-row center-contents default-div" style={{ marginBottom: "2em" }}>
-        <Blocks color="#7AADD6" margin="0em auto 0em auto" value={longDesc.split(" ")[0]} text="Long" description={longDesc} setText={setText} setShortDesc={setShortDesc} setMedDesc={setMedDesc} setLongDesc={setLongDesc} setCustomDesc={setCustomDesc} />
+        <Blocks color="#7AADD6" margin="0em 0em 0em auto" value={longDesc.split(" ")[0]} text="Long" description={longDesc} setText={setText} setShortDesc={setShortDesc} setMedDesc={setMedDesc} setLongDesc={setLongDesc} setCustomDesc={setCustomDesc} />
         <Blocks color="#467AA3" margin="0em auto 0em auto" value={customDesc.split(" ")[0]} text="Custom" description={customDesc} setText={setText} setShortDesc={setShortDesc} setMedDesc={setMedDesc} setLongDesc={setLongDesc} setCustomDesc={setCustomDesc} />
       </div>
-      {/* <Button location={"/"} margin={"auto"} type={"thin-rect-button"} text={"Restart"} /> */}
+      <Button location={""} margin={"auto"} type={"thinner-rect-button"} text={"Continue"} />
+      <Button location={"/load"} margin={"auto"} type={"thinnest-rect-button"} text={"Restart"} />
     </>
   );
 }

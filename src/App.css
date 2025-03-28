@@ -124,7 +124,27 @@ input:focus {
   margin-right: auto;
   font-size: 2em;
   cursor: pointer;
-  border: #89AFC3;
+  border: #639bca 0.1em solid;
+}
+
+.thinner-rect-button {
+  height: 1.7em;
+  width: 8em;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1.9em;
+  cursor: pointer;
+  border: #639bca 0.1em solid;
+}
+
+.thinnest-rect-button {
+  height: 1.5em;
+  width: 8em;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1.25em;
+  cursor: pointer;
+  border: #639bca 0.1em solid;
 }
 
 .border-rect-button {
