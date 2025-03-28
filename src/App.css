@@ -11,12 +11,12 @@
 /* change to body when time */
 * {
   font-family: 'Pixel Font';
-  background-color: #89AFC3;
+  background-color: #7AADD6;
   color: white;
 }
 
 div {
-  background-color: #89AFC3;
+  background-color: #7AADD6;
 }
 
 .title {
@@ -29,7 +29,7 @@ div {
   margin: 2em;
   text-align: left;
   /* padding: 1em 0em 1em 1em; */
-  color: #5F94B1;
+  color: #689cc7;
   background-color: white;
 }
 
@@ -37,13 +37,13 @@ div {
   font-size: 5em;
   text-align: center;
   padding: 1em 0em 1em 0em;
-  color: #89AFC3;
+  color: #689cc7;
   background-color: white;
 }
 
 p {
   background-color: white;
-  color: #5F94B1;
+  color: #689cc7;
   font-size: 4em;
   margin: 0em;
 }
@@ -67,7 +67,7 @@ p {
 
 .default-div {
   background-color: white;
-  color: #5F94B1;
+  color: #639bca;
 }
 
 .end-contents {
@@ -114,7 +114,7 @@ input:focus {
 }
 
 ::placeholder {
-  color: #6D99B6;
+  color: #b0d7f7;
 }
 
 .thin-rect-button {
@@ -131,8 +131,8 @@ input:focus {
   height: 2.2em;
   width: 6em;
   background-color: white;
-  color: #5F94B1;
-  border: #89AFC3 0.1em solid;
+  color: #639bca;
+  border: #639bca 0.1em solid;
   margin-left: auto;
   margin-right: auto;
   font-size: 1.4em;

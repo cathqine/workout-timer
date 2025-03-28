@@ -11,7 +11,7 @@ import NewWorkout from './components/pages/NewWorkout.tsx';
 
 const Router = () => {
   return (
-    <>
+    <div className='center-contents flex-col'>
       <Link to={'/'} style={{ textDecoration: 'none' }}>
         <div className="title">Workout Timer</div>
       </Link>
@@ -26,7 +26,7 @@ const Router = () => {
           <Route path="/customs" element={<Customs />} />
         </Routes>
       </div>
-    </>
+    </div>
   );
 }
 const App = () => {

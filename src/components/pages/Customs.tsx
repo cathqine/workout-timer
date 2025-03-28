@@ -38,7 +38,7 @@ const Customs = (): ReactElement => {
       </div>
       <div className="flex-row center-contents default-div" style={{ marginBottom: "2em" }}>
         <Blocks color="#7AADD6" margin="0em auto 0em auto" value={longDesc.split(" ")[0]} text="Long" description={longDesc} setText={setText} setShortDesc={setShortDesc} setMedDesc={setMedDesc} setLongDesc={setLongDesc} setCustomDesc={setCustomDesc} />
-        {/* <Blocks color="#467AA3" margin="0em auto 0em auto" value={customDesc.split(" ")[0]} text="Custom" description={customDesc} setText={setText} setShortDesc={setShortDesc} setMedDesc={setMedDesc} setLongDesc={setLongDesc} setCustomDesc={setCustomDesc} /> */}
+        <Blocks color="#467AA3" margin="0em auto 0em auto" value={customDesc.split(" ")[0]} text="Custom" description={customDesc} setText={setText} setShortDesc={setShortDesc} setMedDesc={setMedDesc} setLongDesc={setLongDesc} setCustomDesc={setCustomDesc} />
       </div>
       {/* <Button location={"/"} margin={"auto"} type={"thin-rect-button"} text={"Restart"} /> */}
     </>
